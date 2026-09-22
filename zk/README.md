@@ -1,30 +1,21 @@
-# Zero-knowledge intention proof scaffold
+# JUSCR zero-knowledge circuits
 
-This directory defines the boundary for an optional privacy layer. The API accepts public signals and a bounded proof string, but it fails closed until a real SP1 or Noir verifier is configured.
+## Intention proof (Noir)
 
-## Public statement
+The Noir scaffold proves that a private intention hash matches the public loop-purpose commitment and that its expiry is later than the public current time. It does not yet verify an Ed25519 signature; that must be added before production use.
 
-A participant can prove that an intention is unexpired and committed to a loop purpose without disclosing the intention text. Proofs must be bound to `loop_id`, `participant_id`, `purpose_commitment`, `expires_at`, and a unique `nonce`.
-
-## Current API
-
-`POST /loops/:id/prove-intention` accepts:
-
-```json
-{
-  "proof": "<bounded opaque proof>",
-  "public_signals": {
-    "loop_id": "...",
-    "participant_id": "...",
-    "purpose_commitment": "<sha256 hex>",
-    "nonce": "<unique value>",
-    "expires_at": "2030-01-01T00:00:00.000Z"
-  }
-}
+```bash
+cd zk/noir
+nargo compile
+nargo execute
+# Optional, depending on the installed Noir toolchain:
+nargo codegen-verifier
 ```
 
-The endpoint never trusts a client-provided `verified` field. It returns `503` until `verifyWithConfiguredVerifier` is replaced with a generated verifier or verifier-service call. Do not treat the educational Noir/SP1 snippets as cryptographic production implementations.
+Generated artifacts are written beneath `target/`. Do not commit private witnesses. Copy only reviewed verification artifacts into `zk/circuits/` when a verifier has been selected.
 
-## Database
+## API boundary
 
-Apply `db/zk-proofs.sql` after `db/schema.sql`. Only proof hashes and public signals are persisted; raw proofs and private intention text are not stored.
+`POST /loops/:id/prove-intention` validates bindings, expiry, size, and replay protection, then calls the verifier boundary. The current verifier is deliberately fail-closed and returns `503` until a real Noir/Barretenberg, SP1, or dedicated verifier service is configured.
+
+The API never trusts a client-provided `verified` flag, stores raw proof payloads, or logs private intention text.

@@ -5,6 +5,7 @@ import cors from "@fastify/cors";
 import { issueConsentToken, computeLoopHealth, getClarityReport, validateConsentToken, validateIntention, hasMutualConsent } from "./loop-service.js";
 import type { LoopState, IntentionVector } from "./types.js";
 import { hashProof, validateProofSubmission, verifyWithConfiguredVerifier, type IntentionProofSubmission, type ProofRecord } from "./zk-proof.js";
+import { buildPublicSignals, verifyZkProof, type ZkProofPayload } from "./zk-verifier.js";
 
 dotenv.config();
 
@@ -63,19 +64,28 @@ app.post("/loops/:id/prove-intention", async (request, reply) => {
   if (errors.length) return reply.code(400).send({ errors });
 
   const signals = submission.public_signals;
-  const nonceKey = `${id}:${signals.participant_id}:${signals.nonce}`;
   const proofHash = hashProof(submission.proof);
   if (proofRecords.has(proofHash)) return reply.code(409).send({ error: "proof has already been submitted" });
 
-  // Do not trust a client-provided verified flag. The verifier is intentionally
-  // fail-closed until a real SP1/Noir verifier is configured.
+  // Never accept a client-provided verified flag. The configured verifier is
+  // fail-closed until a real circuit verifier is installed.
   const verified = await verifyWithConfiguredVerifier(submission);
   if (!verified) return reply.code(503).send({ error: "ZK verifier is not configured; proof was not accepted", proof_hash: proofHash });
 
+  const nonceKey = `${id}:${signals.participant_id}:${signals.nonce}`;
   usedProofNonces.add(nonceKey);
   const record: ProofRecord = { proof_hash: proofHash, loop_id: id, participant_id: signals.participant_id, public_signals: signals, verified: true, verified_at: new Date().toISOString() };
   proofRecords.set(proofHash, record);
   return reply.code(201).send({ proof_hash: proofHash, verified: true, verified_at: record.verified_at });
+});
+
+app.post("/verify-proof", async (request, reply) => {
+  const body = request.body as Partial<ZkProofPayload>;
+  if (typeof body.proof !== "string" || !Array.isArray(body.publicSignals)) {
+    return reply.code(400).send({ error: "proof and publicSignals are required" });
+  }
+  const valid = await verifyZkProof({ proof: body.proof, publicSignals: body.publicSignals, circuit: body.circuit ?? "intention" });
+  return { valid };
 });
 
 app.get("/proofs/:proofHash", async (request, reply) => {
@@ -111,3 +121,5 @@ app.post("/consent/:tokenId/revoke", async (request, reply) => {
 
 const port = Number(process.env.PORT) || 3000;
 app.listen({ port, host: "0.0.0.0" }).then(() => console.log(`JUSCR Mesh API running on http://localhost:${port}`)).catch((error) => { console.error(error); process.exit(1); });
+
+export { app, buildPublicSignals };

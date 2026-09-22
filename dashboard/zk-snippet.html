@@ -1,0 +1,49 @@
+      <div class="card" style="margin-top: 20px;">
+        <h3>Private Intention (ZK)</h3>
+        <p>Submit a proof without sending private intention text. The API remains fail-closed until a real verifier is configured.</p>
+        <label for="loopIdInput">Loop ID</label>
+        <input id="loopIdInput" type="text" placeholder="Paste loop ID" style="margin: 8px 0; width: 100%; padding: 10px; box-sizing: border-box;" />
+        <button id="zkIntentionBtn" type="button">Prove Private Intention (ZK)</button>
+        <div id="zkStatus" class="report">No proof submitted.</div>
+      </div>
+
+      <script>
+        const API = 'http://localhost:3000';
+        let currentLoopId = '';
+
+        async function sha256Hex(value) {
+          const bytes = new TextEncoder().encode(value);
+          const hash = await crypto.subtle.digest('SHA-256', bytes);
+          return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        document.getElementById('zkIntentionBtn').addEventListener('click', async () => {
+          currentLoopId = document.getElementById('loopIdInput').value.trim();
+          if (!currentLoopId) return alert('Enter a loop ID first');
+          const status = document.getElementById('zkStatus');
+          try {
+            const loopResponse = await fetch(`${API}/loops/${encodeURIComponent(currentLoopId)}`);
+            if (!loopResponse.ok) throw new Error('Loop not found');
+            const loop = await loopResponse.json();
+            const body = {
+              proof: `placeholder-${crypto.randomUUID()}`,
+              public_signals: {
+                loop_id: currentLoopId,
+                participant_id: 'dashboard-participant',
+                purpose_commitment: await sha256Hex(loop.purpose),
+                nonce: crypto.randomUUID(),
+                expires_at: new Date(Date.now() + 3600000).toISOString()
+              }
+            };
+            const response = await fetch(`${API}/loops/${encodeURIComponent(currentLoopId)}/prove-intention`, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(body)
+            });
+            const data = await response.json();
+            status.textContent = response.ok ? `ZK proof accepted: ${data.proof_hash}` : `Proof not accepted (${response.status}): ${data.error || (data.errors || []).join(', ')}`;
+          } catch (error) {
+            status.textContent = error instanceof Error ? error.message : 'Unable to submit proof';
+          }
+        });
+      </script>
