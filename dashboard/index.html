@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JUSCR Mesh Dashboard</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: #122033;
+        --ink: #edf6ff;
+        --muted: #a6b9d8;
+        --green: #62e1a5;
+        --amber: #f7c66d;
+        --red: #ff6c6c;
+        --cyan: #7fd7ff;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 20px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        background: rgba(127, 215, 255, 0.12);
+        color: var(--cyan);
+        border-radius: 999px;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .metric {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 8px 0;
+      }
+      .status-healthy { color: var(--green); }
+      .status-stalled { color: var(--amber); }
+      .status-dissolving { color: var(--red); }
+      .status-auditing { color: var(--cyan); }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+      }
+      th, td {
+        text-align: left;
+        padding: 12px 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      th {
+        color: var(--muted);
+      }
+      button {
+        background: var(--cyan);
+        color: #08131d;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .report {
+        margin-top: 18px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="pill">JUSCR Mesh</div>
+          <h1>Open Resonance Loop Health Dashboard</h1>
+        </div>
+        <button id="refreshBtn">Refresh</button>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div>Loop Health</div>
+          <div class="metric status-healthy" id="healthValue">Healthy</div>
+        </div>
+        <div class="card">
+          <div>Consent Tokens</div>
+          <div class="metric" id="consentValue">0</div>
+        </div>
+        <div class="card">
+          <div>Clarity Score</div>
+          <div class="metric" id="clarityValue">91%</div>
+        </div>
+        <div class="card">
+          <div>Respect Index</div>
+          <div class="metric" id="respectValue">88%</div>
+        </div>
+      </div>
+
+      <div class="card report">
+        <h3>Current Clarity Report</h3>
+        <div id="reportText">No loop loaded yet.</div>
+      </div>
+
+      <div class="card" style="margin-top: 20px;">
+        <h3>Recent Loop Activity</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Node</th>
+              <th>Role</th>
+              <th>Consent</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Node-01</td>
+              <td>Builder</td>
+              <td>Active</td>
+              <td><span class="status-healthy">Healthy</span></td>
+            </tr>
+            <tr>
+              <td>Node-02</td>
+              <td>Observer</td>
+              <td>Revocable</td>
+              <td><span class="status-healthy">Healthy</span></td>
+            </tr>
+            <tr>
+              <td>Node-03</td>
+              <td>Scaffold</td>
+              <td>Pending re-consent</td>
+              <td><span class="status-stalled">Stalled</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const fetchLoop = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/health');
+          if (!response.ok) {
+            throw new Error('API not reachable');
+          }
+          const health = await response.json();
+          document.getElementById('reportText').textContent = `API status: ${health.ok ? 'ok' : 'unavailable'}`;
+        } catch (error) {
+          document.getElementById('reportText').textContent = 'API unavailable. Start the JUSCR API service first.';
+        }
+      };
+
+      document.getElementById('refreshBtn').addEventListener('click', fetchLoop);
+      fetchLoop();
+    </script>
+  </body>
+</html>

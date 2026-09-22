@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: JUSCR Mesh API
+  version: 0.1.0
+  description: API for Open Resonance Mesh and Consent-Ledger loops
+servers:
+  - url: http://localhost:3000
+paths:
+  /loops:
+    post:
+      summary: Create a loop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [purpose]
+              properties:
+                purpose:
+                  type: string
+      responses:
+        '201':
+          description: Created loop
+  /loops/{id}:
+    get:
+      summary: Get loop state
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Loop state
+  /loops/{id}/clarity:
+    get:
+      summary: Get clarity report
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Clarity report
+  /loops/{id}/intentions:
+    post:
+      summary: Submit intention vector
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id, author, purpose, timestamp, expires, signature]
+              properties:
+                id:
+                  type: string
+                author:
+                  type: string
+                purpose:
+                  type: string
+                timestamp:
+                  type: string
+                  format: date-time
+                expires:
+                  type: string
+                  format: date-time
+                signature:
+                  type: string
+      responses:
+        '201':
+          description: Intention created
+  /loops/{id}/consent:
+    post:
+      summary: Issue a consent token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to, scope, ttlMs]
+              properties:
+                from:
+                  type: string
+                to:
+                  type: string
+                scope:
+                  type: string
+                ttlMs:
+                  type: integer
+      responses:
+        '201':
+          description: Consent token created

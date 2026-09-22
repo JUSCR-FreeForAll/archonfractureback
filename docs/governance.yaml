@@ -1,0 +1,19 @@
+governance:
+  model: public_fork_and_merge
+  merge_criteria:
+    required:
+      - clarity_score_increase: true
+      - respect_metric_increase: true
+      - non_extractive_throughput: true
+  fork_rule:
+    - any_participant_can_fork
+  thresholds:
+    clarity_score:
+      min_increase: 0.05
+    respect_metric:
+      min_increase: 0.05
+  auto_dissolve:
+    when:
+      - local system becomes self-sustaining
+      - scaffold stops producing agency gain
+      - consent is missing or revoked

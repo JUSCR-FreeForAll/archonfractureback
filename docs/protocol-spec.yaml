@@ -1,0 +1,63 @@
+title: JUSCR Runtime Protocol
+version: 0.1.0
+status: active
+principles:
+  - full_transparency_by_default
+  - explicit_time_bound_consent
+  - no_permanent_privileged_nodes
+  - respect_and_clarity_as_hard_constraints
+  - infrastructure_as_source_not_intermediary
+
+invariants:
+  - Every participant may inspect any loop they interact with.
+  - No resource flow occurs without explicit, mutual, revocable consent.
+  - All roles are ephemeral and logged.
+  - Disrespectful or opaque actions trigger soft-halt and audit.
+  - No extraction or permanent privilege accumulation.
+
+entityDefinitions:
+  Participant:
+    fields:
+      id: string
+      display_name: string
+      role: string
+      created_at: datetime
+      status: active | suspended | revoked
+
+  IntentionVector:
+    fields:
+      id: string
+      author: participant_id
+      purpose: string
+      timestamp: datetime
+      expires_at: datetime
+      signature: string
+      status: active | expired | revoked
+
+  ConsentToken:
+    fields:
+      id: string
+      loop_id: string
+      from_participant: participant_id
+      to_participant: participant_id
+      scope: string
+      issued_at: datetime
+      expires_at: datetime
+      revoked: boolean
+      status: active | expired | revoked
+
+  Loop:
+    fields:
+      id: string
+      health: healthy | stalled | dissolving | auditing
+      created_at: datetime
+      updated_at: datetime
+      purpose: string
+      status: active | archived
+
+validationRules:
+  - IntentionVector.signature must verify against author.
+  - ConsentToken.expires_at must be greater than issued_at.
+  - Pairwise consent must be valid in both directions for a given scope.
+  - A loop may not transfer attention or resources without active consent.
+  - Extractive behavior is rejected at protocol level.

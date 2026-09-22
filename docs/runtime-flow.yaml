@@ -1,0 +1,7 @@
+sequence:
+  - create_loop
+  - submit_intention
+  - issue_two_way_consent
+  - evaluate_loop_health
+  - scaffold_if_needed
+  - revoke_or_expire_invalid_tokens

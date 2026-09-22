@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: juscr
+      POSTGRES_PASSWORD: juscr_secret
+      POSTGRES_DB: juscr
+    ports:
+      - "5432:5432"
+    volumes:
+      - juscr_pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://juscr:juscr_secret@db:5432/juscr
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: npm run dev
+
+volumes:
+  juscr_pgdata:
