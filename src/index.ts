@@ -5,7 +5,7 @@ import cors from "@fastify/cors";
 import { issueConsentToken, computeLoopHealth, getClarityReport, validateConsentToken, validateIntention, hasMutualConsent } from "./loop-service.js";
 import type { LoopState, IntentionVector } from "./types.js";
 import { hashProof, validateProofSubmission, verifyWithConfiguredVerifier, type IntentionProofSubmission, type ProofRecord } from "./zk-proof.js";
-import { buildPublicSignals, verifyZkProof, type ZkProofPayload } from "./zk-verifier.js";
+import { buildPublicSignals, getZkInitError, initZkVerifier, isZkReady, verifyZkProof, type ZkProofPayload } from "./zk-verifier.js";
 
 dotenv.config();
 
@@ -55,6 +55,9 @@ app.post("/loops/:id/intentions", async (request, reply) => {
 });
 
 app.post("/loops/:id/prove-intention", async (request, reply) => {
+  if (!isZkReady()) {
+    return reply.code(503).send({ error: "Zero-knowledge verifier unavailable", detail: getZkInitError() });
+  }
   const { id } = request.params as { id: string };
   const loop = loops.get(id);
   if (!loop) return reply.code(404).send({ error: "Loop not found" });
@@ -80,6 +83,9 @@ app.post("/loops/:id/prove-intention", async (request, reply) => {
 });
 
 app.post("/verify-proof", async (request, reply) => {
+  if (!isZkReady()) {
+    return reply.code(503).send({ error: "Zero-knowledge verifier unavailable", detail: getZkInitError() });
+  }
   const body = request.body as Partial<ZkProofPayload>;
   if (typeof body.proof !== "string" || !Array.isArray(body.publicSignals)) {
     return reply.code(400).send({ error: "proof and publicSignals are required" });
@@ -120,6 +126,11 @@ app.post("/consent/:tokenId/revoke", async (request, reply) => {
 });
 
 const port = Number(process.env.PORT) || 3000;
+try {
+  await initZkVerifier();
+} catch {
+  console.error("[zk] Verifier unavailable - ZK routes will return 503");
+}
 app.listen({ port, host: "0.0.0.0" }).then(() => console.log(`JUSCR Mesh API running on http://localhost:${port}`)).catch((error) => { console.error(error); process.exit(1); });
 
 export { app, buildPublicSignals };
