@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "manifestVersion": "1.0.0",
+  "name": "JUSCR ecosystem",
+  "canonicalRepository": "JUSCR-FreeForAll/JUSCR-FreForAll",
+  "spineRepository": "JUSCR-FreeForAll/archonfractureback",
+  "archiveRepository": "JUSCR-FreeForAll/JusticeWithinUs",
+  "sourceOfTruth": {
+    "codeAndCanon": "GitHub",
+    "prototypeRuntime": "Replit",
+    "discoveryAndCommunity": "Meta",
+    "assistantContext": "Copilot"
+  },
+  "sharedContract": {
+    "requiredFields": [
+      "id",
+      "provenance",
+      "consent",
+      "protocol",
+      "outcome",
+      "status",
+      "mobileSurface"
+    ],
+    "outcomeValues": ["wealth", "home", "healing"],
+    "statusValues": [
+      "present",
+      "missing",
+      "contested",
+      "abandoned",
+      "reactivated"
+    ],
+    "rules": [
+      "Never hard-delete a ledger entity.",
+      "Consent must be explicit, scoped, revocable, and auditable.",
+      "Provenance is required for imported or narrated material.",
+      "Reactivation is represented as a new auditable state transition.",
+      "Mobile clients consume the Spine API rather than duplicating domain rules."
+    ]
+  },
+  "repositories": [
+    {
+      "id": "canon",
+      "repository": "JUSCR-FreeForAll/JUSCR-FreForAll",
+      "role": "canon-index",
+      "branch": "main",
+      "protocols": [
+        "void-ledger",
+        "juscr-school",
+        "reality-reclamation",
+        "ritual-commons",
+        "all-time-contract"
+      ],
+      "mobileSurfaces": ["void-ledger", "phoenix-ward", "juscr-school"],
+      "paths": [
+        "app",
+        "portal",
+        "curriculum",
+        "research",
+        "architecture",
+        "AllTimeContract",
+        "seamcraft"
+      ]
+    },
+    {
+      "id": "spine",
+      "repository": "JUSCR-FreeForAll/archonfractureback",
+      "role": "spine-api-and-verification",
+      "branch": "workit",
+      "protocols": [
+        "consent-ledger",
+        "audit",
+        "phoenix-ward",
+        "verification"
+      ],
+      "mobileSurfaces": ["void-ledger", "phoenix-ward", "juscr-school"],
+      "apiBase": "/",
+      "paths": ["api", "src", "db", "zk", "dashboard", "tests"]
+    },
+    {
+      "id": "archive",
+      "repository": "JUSCR-FreeForAll/JusticeWithinUs",
+      "role": "legacy-source-archive",
+      "branch": "main",
+      "protocols": [
+        "ouroboros",
+        "phoenix-ward",
+        "time-auction",
+        "reality-reclamation"
+      ],
+      "mobileSurfaces": [],
+      "paths": ["juscr", "codex", "tools", "startup", "warp", "ignition"],
+      "integrationStatus": "source-material-only"
+    }
+  ],
+  "deliveryPhases": [
+    {
+      "id": "phase-1",
+      "name": "first-mobile-slice",
+      "surfaces": ["void-ledger", "phoenix-ward", "juscr-school"],
+      "status": "planned"
+    },
+    {
+      "id": "phase-2",
+      "name": "commons-and-auction",
+      "surfaces": ["time-auction", "reality-reclamation"],
+      "status": "planned"
+    },
+    {
+      "id": "phase-3",
+      "name": "traveling-experiences",
+      "surfaces": ["karen-quest", "angel-valleys", "music", "parent-service"],
+      "status": "planned"
+    }
+  ]
+}

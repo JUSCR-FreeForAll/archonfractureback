@@ -13,6 +13,13 @@ Open Resonance Mesh and Consent-Ledger runtime for the JUSCR specification.
 - Docker Compose setup for PostgreSQL + API
 - Unit tests
 - Governance and threat-model documentation
+- Cross-repository ecosystem manifest and integration boundary
+
+## Ecosystem role
+
+This repository is the **JUSCR Spine API and verification service**. It owns runtime consent enforcement, provenance-aware audit behavior, and verification boundaries. It does not replace the canon repository or absorb the legacy archive.
+
+See [`ECOSYSTEM.md`](ECOSYSTEM.md) and [`ecosystem/manifest.json`](ecosystem/manifest.json) for the repository map, shared contract, and staged mobile boundary.
 
 ## Quick start
 
