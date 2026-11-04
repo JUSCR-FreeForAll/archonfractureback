@@ -12,7 +12,7 @@
     "prevHash": "juscr:prevHash",
     "stateHash": "juscr:stateHash",
     "timestamp": {
-      "@id": "http://www.w3.org/2006/time#inXSDDateTime",
+      "@id": "juscr:timestamp",
       "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
     }
   }
