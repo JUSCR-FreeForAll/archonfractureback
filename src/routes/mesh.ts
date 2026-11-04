@@ -19,6 +19,20 @@ export async function registerMeshRoutes(
   app: FastifyInstance,
   dependencies: MeshEventDependencies
 ): Promise<void> {
+  // CloudEvents structured mode uses application/cloudevents+json.
+  // Fastify's built-in JSON parser does not register that media type by default.
+  app.addContentTypeParser(
+    "application/cloudevents+json",
+    { parseAs: "string" },
+    (_request, body, done) => {
+      try {
+        done(null, JSON.parse(body as string));
+      } catch (error) {
+        done(error as Error);
+      }
+    }
+  );
+
   app.post("/api/v1/mesh/events", async (request, reply) => {
     const parsed = MeshEventSchema.safeParse(request.body);
 
