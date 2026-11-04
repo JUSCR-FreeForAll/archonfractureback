@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "juscr": "https://juscr.network/ns#",
+    "actor": {
+      "@id": "juscr:actor",
+      "@type": "@id"
+    },
+    "segment": "juscr:segment",
+    "module": "juscr:module",
+    "mutation": "juscr:mutation",
+    "prevHash": "juscr:prevHash",
+    "stateHash": "juscr:stateHash",
+    "timestamp": {
+      "@id": "http://www.w3.org/2006/time#inXSDDateTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    }
+  }
+}
