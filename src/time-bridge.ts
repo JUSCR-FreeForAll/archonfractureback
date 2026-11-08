@@ -99,3 +99,6 @@ export async function enqueueRealmSignal(
 
   throw new Error("no active consent grant authorizes this destination layer");
 }
+
+/** Friendly project-facing name for the internal signal/outbox operation. */
+export const enqueueHotflash = enqueueRealmSignal;
