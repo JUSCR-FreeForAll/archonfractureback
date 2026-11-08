@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">New Earth Sandbox — Day 1</title>
+  <desc id="desc">A luminous tree with branching leaves and deep roots inside a circular horizon, symbolizing continuity, stewardship, and shared growth.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0" stop-color="#173c48"/>
+      <stop offset="1" stop-color="#07131f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff0b4"/>
+      <stop offset=".48" stop-color="#e7b95f"/>
+      <stop offset="1" stop-color="#a66a2c"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c6efaa"/>
+      <stop offset="1" stop-color="#438d71"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="400" cy="400" r="370" fill="url(#bg)" stroke="url(#gold)" stroke-width="8"/>
+  <circle cx="400" cy="400" r="342" fill="none" stroke="#6ba8a2" stroke-opacity=".55" stroke-width="2"/>
+  <path d="M100 490 Q250 430 400 475 Q555 420 700 490" fill="none" stroke="#6aa6a0" stroke-width="3" opacity=".65"/>
+  <path d="M110 510 Q250 475 400 510 Q550 475 690 510" fill="none" stroke="#d5ad63" stroke-width="2" opacity=".5"/>
+  <g fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M400 500 C398 430 405 355 400 265 C398 225 410 190 425 155" stroke-width="18"/>
+    <path d="M400 335 C360 300 330 265 300 225 M400 365 C450 325 480 285 510 235" stroke-width="11"/>
+    <path d="M385 300 C350 280 325 245 315 205 M420 300 C455 270 475 235 480 195" stroke-width="8"/>
+    <path d="M400 270 C380 230 370 195 375 165 M410 245 C430 210 440 180 435 145" stroke-width="7"/>
+    <path d="M400 500 C370 545 335 570 290 590 M400 500 C430 545 470 570 520 590 M390 520 C365 580 360 615 350 650 M415 520 C435 575 445 615 455 650 M400 525 C400 585 400 620 400 675" stroke-width="8"/>
+    <path d="M350 555 C315 555 285 545 260 525 M450 555 C490 555 520 545 545 525 M365 590 C335 615 315 630 290 640 M435 590 C465 615 485 630 510 640" stroke-width="5"/>
+  </g>
+  <g fill="url(#leaf)" stroke="#d5efb9" stroke-width="2">
+    <ellipse cx="300" cy="220" rx="22" ry="12" transform="rotate(35 300 220)"/>
+    <ellipse cx="325" cy="250" rx="22" ry="12" transform="rotate(25 325 250)"/>
+    <ellipse cx="315" cy="195" rx="20" ry="11" transform="rotate(65 315 195)"/>
+    <ellipse cx="360" cy="205" rx="22" ry="12" transform="rotate(50 360 205)"/>
+    <ellipse cx="375" cy="165" rx="21" ry="12" transform="rotate(80 375 165)"/>
+    <ellipse cx="425" cy="155" rx="22" ry="12" transform="rotate(100 425 155)"/>
+    <ellipse cx="450" cy="195" rx="23" ry="12" transform="rotate(125 450 195)"/>
+    <ellipse cx="480" cy="195" rx="22" ry="12" transform="rotate(75 480 195)"/>
+    <ellipse cx="510" cy="235" rx="23" ry="12" transform="rotate(145 510 235)"/>
+    <ellipse cx="475" cy="270" rx="23" ry="12" transform="rotate(145 475 270)"/>
+    <ellipse cx="350" cy="285" rx="23" ry="12" transform="rotate(35 350 285)"/>
+    <ellipse cx="450" cy="315" rx="23" ry="12" transform="rotate(145 450 315)"/>
+    <ellipse cx="390" cy="235" rx="21" ry="11" transform="rotate(85 390 235)"/>
+    <ellipse cx="415" cy="205" rx="21" ry="11" transform="rotate(95 415 205)"/>
+  </g>
+  <circle cx="400" cy="490" r="18" fill="#fff0b4" filter="url(#glow)"/>
+  <path d="M160 505 Q400 565 640 505" fill="none" stroke="url(#gold)" stroke-width="4"/>
+  <g fill="#f4d28a" font-family="Georgia,serif" text-anchor="middle" letter-spacing="7">
+    <text x="400" y="95" font-size="31">NEW EARTH SANDBOX</text>
+    <text x="400" y="735" font-size="38" letter-spacing="12">DAY 1</text>
+  </g>
+  <g fill="#a7d7d1" font-family="Arial,sans-serif" text-anchor="middle" letter-spacing="3">
+    <text x="400" y="680" font-size="15">BUILD • LEARN • PROTECT • LOVE</text>
+  </g>
+  <g fill="#fff0b4" opacity=".8">
+    <circle cx="190" cy="330" r="4"/><circle cx="610" cy="340" r="4"/>
+    <circle cx="230" cy="410" r="3"/><circle cx="570" cy="415" r="3"/>
+  </g>
+</svg>
