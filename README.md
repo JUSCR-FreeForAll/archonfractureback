@@ -50,3 +50,15 @@ docker compose up --build
 - All intention vectors are validated for format and expiry.
 - Mutual consent is enforced before a resource path may be treated as valid.
 - The server uses in-memory storage for the demo runtime; swap with PostgreSQL-backed persistence for production.
+
+
+## Lost Legacies Live Time Engine (bounded prototype)
+
+- `src/time-model.ts` — versioned 1–10 counted-imagination / radix model.
+- `src/time-engine-store.ts` — PostgreSQL transaction lock and idempotency helpers.
+- `src/time-bridge.ts` — consent-gated encrypted internal layer-signal outbox.
+- `db/migrations/002_time_engine.sql` — private-first Secret Room and Time Engine tables.
+- `dashboard/secret-room.html` — local-only UI prototype; test drafts are held in tab memory and exported, not persisted or transmitted.
+- `docs/time/time-engine-implementation.md` — model interpretation, boundaries, and activation gates.
+
+Apply `db/schema.sql` before `db/migrations/002_time_engine.sql`. The new module is not exposed through public API routes until authenticated participant identity and encryption-key management are implemented and reviewed.
