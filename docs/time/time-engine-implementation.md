@@ -28,13 +28,15 @@ Counts beyond 10 are rejected until a recurrence rule is specified. The sequence
 
 - `db/migrations/002_time_engine.sql` adds private Secret Rooms, encrypted contribution payloads, revisions, consent grants, minimal audit metadata, and idempotency records.
 - `src/time-engine-store.ts` provides a PostgreSQL transaction-scoped advisory lock and idempotency-key claim helper.
+- `src/time-bridge.ts` queues encrypted, consent-gated application signals between model layers. It checks an active consent grant for the destination layer, hashes payload ciphertext, and rejects idempotency-key reuse with a different payload.
+- `time_realm_messages` is an internal outbox; a separate worker and authorization policy are required before delivery is enabled.
 - Ciphertext is stored as BYTEA; plaintext narrative content must not be written to audit metadata.
 - The DB constraints keep local-only/eligible contributions private. Shared state requires a separate explicit consent workflow.
 - The storage helper assumes caller authorization. It is not an authentication layer.
 
 ## Secret Room UI and cross-layer communication
 
-The Secret Room is a local draft surface with optional +1/2 and -1/2 review lenses. Those lenses are prompts, not autonomous agents or diagnostic authorities. A cross-layer message is an application event/outbox record with explicit source, destination, consent scope, and delivery status; it is not communication between independently existing realms. No public post, external contact, token issuance, payment, or blockchain transaction is triggered by local drafting.
+The Secret Room is a local draft surface with optional +1/2 and -1/2 review lenses. Those lenses are prompts, not autonomous agents or diagnostic authorities. A cross-layer message is an encrypted application event/outbox record with explicit source, destination, consent grant, and delivery status; it is not communication between independently existing realms. The prototype UI currently holds draft text in tab memory and exports a test JSON file; it deliberately does not persist, encrypt, authenticate, or publish. No public post, external contact, token issuance, payment, or blockchain transaction is triggered by local drafting.
 
 ## Not yet enabled
 
