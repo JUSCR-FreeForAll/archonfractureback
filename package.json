@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:migrate": "psql $DATABASE_URL -f db/schema.sql"
+    "db:migrate": "psql $DATABASE_URL -f db/schema.sql && psql $DATABASE_URL -f db/migrations/002_time_engine.sql"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.0",
