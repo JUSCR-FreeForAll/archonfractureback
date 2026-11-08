@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS time_realm_messages (
   to_layer TEXT NOT NULL CHECK (to_layer IN ('earth-realm-2', 'ouroboros-negative', 'realm-3', 'realm-4', 'higher-order-unmapped')),
   message_type TEXT NOT NULL CHECK (message_type IN ('state_transition', 'review_result', 'publication_notice', 'sync_signal')),
   payload_ciphertext BYTEA NOT NULL,
+  payload_hash TEXT NOT NULL,
   idempotency_key TEXT NOT NULL,
   delivery_status TEXT NOT NULL DEFAULT 'queued' CHECK (delivery_status IN ('queued', 'delivered', 'cancelled', 'failed')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
