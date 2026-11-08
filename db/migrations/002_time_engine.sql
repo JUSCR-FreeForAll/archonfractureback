@@ -85,3 +85,26 @@ CREATE INDEX IF NOT EXISTS idx_time_idempotency_expiry ON time_idempotency_keys(
 
 COMMENT ON TABLE time_secret_rooms IS 'Private-by-default dual-zero workspaces; 0_m and 0_f are model labels, not sex/gender inference.';
 COMMENT ON TABLE time_legacy_contributions IS 'Encrypted contribution payloads; symbolic energy is not money and is not tokenized.';
+
+-- Internal realm/layer signal outbox ("Hotflash" bridge).
+-- This is application-level routing, not inter-realm or external messaging.
+CREATE TABLE IF NOT EXISTS time_realm_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
+  consent_grant_id UUID NOT NULL REFERENCES time_consent_grants(id) ON DELETE RESTRICT,
+  from_layer TEXT NOT NULL CHECK (from_layer IN ('earth-realm-2', 'ouroboros-negative', 'realm-3', 'realm-4', 'higher-order-unmapped')),
+  to_layer TEXT NOT NULL CHECK (to_layer IN ('earth-realm-2', 'ouroboros-negative', 'realm-3', 'realm-4', 'higher-order-unmapped')),
+  message_type TEXT NOT NULL CHECK (message_type IN ('state_transition', 'review_result', 'publication_notice', 'sync_signal')),
+  payload_ciphertext BYTEA NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  delivery_status TEXT NOT NULL DEFAULT 'queued' CHECK (delivery_status IN ('queued', 'delivered', 'cancelled', 'failed')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  delivered_at TIMESTAMPTZ,
+  UNIQUE (participant_id, idempotency_key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_time_realm_messages_outbox
+  ON time_realm_messages(delivery_status, created_at)
+  WHERE delivery_status = 'queued';
+
+COMMENT ON TABLE time_realm_messages IS 'Consent-gated internal event outbox for application layer transitions; not a channel to external entities.';
