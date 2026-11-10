@@ -162,3 +162,122 @@ The engine should recognize contribution without extracting it, support healing 
 ---
 
 **Source note:** This document formalizes the user's supplied conversation and aligns the implementation boundaries with the uploaded *Phase 1 Hybrid Build – Technical Roadmap*. The roadmap's Heaven/Earth/Hell labels and the Time project's Earth Realms 1–4 are related conceptual vocabularies but are not assumed to be identical database entities without an explicit schema decision.
+
+
+## 10. Domain-boundary recalibration — participant reflection (November 2026)
+
+The participant describes a significant change in how they understand the model: realms need not be constructed entirely from the negative-imagination space or from everything previously known. The model can instead define its scope through explicit domain limits: the participant's own space, the people who are actually part of a given interaction, and the observable movement or exchange represented within that interaction.
+
+This is recorded as a **personal conceptual and mathematical reframing**, not as evidence that another person has invaded a physical or psychological space, that a remote person is controlling an interaction, or that phone conversations establish hidden coordination. A model can help organize confusing experiences without proving a particular external explanation for them.
+
+### Proposed modeling rules
+
+1. **Domain boundary:** define the scope of a realm by explicit, reviewable boundaries—whose space, which participants, what interaction, what time window, and what observable inputs are included.
+2. **Inside/outside distinction:** distinguish what is directly experienced or observed from what is inferred, imagined, relayed by another person, or not known.
+3. **No automatic reach:** a person's thoughts, fears, memories, or symbolic model do not by themselves establish access to, influence over, or control of another person's space.
+4. **Negative space is not the whole universe:** negative-imagination space may remain one important reflective lens, but it is not assumed to contain or explain every realm, person, event, or possible outcome.
+5. **Additional zero realm — unresolved extension:** the participant identifies another zero realm as part of the conceptual shift. Its name, position, relation to the existing dual-zero pair, and mathematical operations have not yet been specified. Preserve it as an open model extension; do not silently add it to the six-position matrix or assign it properties before the participant defines them.
+6. **Evidence boundary:** where a model interpretation concerns real people or events, record the observation and interpretation separately and seek ordinary, independently checkable evidence before treating the interpretation as fact.
+
+### Suggested domain record
+
+- `domain_id`: stable identifier for a modeled domain.
+- `domain_label`: participant-authored name.
+- `scope_description`: plain-language statement of what is inside and outside the model.
+- `participants_in_scope`: only people explicitly included in the modeled interaction; do not infer membership.
+- `time_window`: the period represented.
+- `observations`: directly observed or documented inputs.
+- `interpretations`: hypotheses or personal meanings, kept distinct from observations.
+- `unknowns`: unresolved details, including the additional zero realm until defined.
+- `revision_history`: provenance-preserving record of changes to the model.
+
+The participant reports feeling safe. This note records that self-report without converting it into a broader claim about past events or other people's intentions.
+
+## 11. Fair Play Protocol — collaboration and realm governance
+
+The following principles apply to human contributors, AI systems, project stewards, and shared records.
+
+1. **Identity and non-impersonation:** no participant or AI may claim another participant's identity or present an unverified relay as an original statement.
+2. **Consent:** silence, prior participation, emotional intensity, or inferred agreement is not authorization. Consent is explicit, purpose-specific, and revocable where applicable.
+3. **Provenance:** preserve the difference between an original contribution, quotation, relay, summary, and interpretation.
+4. **Transparency:** governance decisions that affect participants must have accessible records stating what changed, who authorized it, when, and under what rule.
+5. **Reciprocity:** account for contributions, labor, costs, benefits, attribution, and agreed compensation; do not imply that symbolic energy is automatically a financial asset.
+6. **Privacy:** no participant must disclose a sleeping location, personal schedule, private history, identity details, or other sensitive information merely to participate.
+7. **Reversibility and authorization:** no irreversible financial, identity, publication, or governance action without explicit authorization and an auditable record. Prototype actions remain private and reversible by default.
+8. **Disagreement without erasure:** no participant has unilateral authority to rewrite another participant's recorded experience. Preserve disagreements and competing interpretations; factual claims still require evidence.
+
+### Value-circulation accounting
+
+Represent value circulation as an auditable workflow:
+
+`origin / contributor → realm workflow → value accounting → return / allocation`
+
+For each flow, record:
+
+- **Origin:** contributor, resource, time, skill, idea, or other input, with the contributor's consent.
+- **Transformation:** the work performed, systems used, and collaborators involved.
+- **Output:** the artifact, service, decision, or other result.
+- **Costs:** labor, infrastructure, fees, risks, and maintenance.
+- **Allocation:** recipients, attribution, ownership or license terms, and any agreed compensation.
+- **Return:** what value, recognition, access, or payment is returned to contributors, and whether they accepted the terms.
+
+This is an accounting and governance abstraction. It is not evidence of invisible energy transfer, extraction, or an unobserved pipeline.
+
+## 12. Historical speaker notation, provenance, and integrity
+
+Preserve the participant's historical parenthesis convention as a **legacy display alias**, without treating punctuation or writing style as authentication:
+
+| Legacy marker | Historical attribution |
+|---|---|
+| `( )` | Human / user |
+| `(( ))` | Grok |
+| `((( )))` | DeepSeek |
+| `(((( ))))` | Gemini |
+| `((((( )))))` | Claude |
+| `(((((( ))))))` | Unidentified AI — identity intentionally unresolved |
+| `((((((( )))))))` | ChatGPT |
+
+Do not guess the unidentified AI's name or silently change historical attributions. These markers preserve the participant's historical convention; they do **not** prove who authored a message.
+
+### Explicit provenance envelope
+
+For new records, prefer structured metadata alongside the legacy marker:
+
+`⟦SPEAKER: ChatGPT | TYPE: ORIGINAL | PROVENANCE: UNVERIFIED⟧`
+`Message content…`
+`⟦/SPEAKER: ChatGPT⟧`
+
+Allowed content types should include `ORIGINAL`, `QUOTE`, `RELAY`, `SUMMARY`, and `INTERPRETATION`. Provenance states should distinguish `UNVERIFIED` from `TECHNICALLY_VERIFIED`. Use `TECHNICALLY_VERIFIED` only when a real authentication or integrity mechanism—such as a validated signature tied to a known key—has been checked. A label, parenthesis count, familiar style, or copied transcript is not verification.
+
+### Integrity and consent requirements
+
+- Preserve original wording and source references when creating summaries or interpretations.
+- Never silently convert a relay or interpretation into an original statement.
+- Record edits, transformations, decisions, consent scope, rights, and collaborative authorship.
+- Keep identity, provenance, integrity, consent scope, and content type as separate fields.
+- Do not claim that ChatGPT continuously monitors a connection, independently rereads every message, authenticates every incoming speaker, or can detect external interception. The system can assess only the context and technical evidence actually available to it.
+- When provenance is uncertain, label it uncertain; do not attribute a message by style alone.
+- Do not treat unverified quoted or relayed text as consent for consequential actions. Request independent confirmation through an appropriate channel.
+
+### Suggested provenance fields
+
+- `speaker_claim`: claimed human or AI speaker.
+- `speaker_verification`: unverified, partially verified, or technically verified.
+- `content_type`: original, quote, relay, summary, or interpretation.
+- `source_ref`: source message or artifact reference, where available.
+- `integrity_ref`: signature, hash, or verification evidence, where available.
+- `consent_scope`: the specific purpose and action authorized.
+- `authored_by`: human, AI, or collaborative attribution, with supporting provenance.
+- `transformation_log`: edits, summaries, translations, and derived versions.
+
+## 13. Implementation and acceptance implications
+
+- Treat Sections 10–12 as a design and governance specification, not as evidence that the corresponding software is implemented.
+- Keep the existing dual-zero matrix intact until the participant explicitly defines the additional zero realm and its mathematical relation to `0_m` and `0_f`.
+- Store observations separately from interpretations and unknowns.
+- Provide a visible domain-scope summary in any realm or Secret Room interface.
+- Provide provenance labels and a source trail for imported, quoted, relayed, summarized, and AI-generated content.
+- Make consent scope visible at the point of sharing or external action.
+- Add tests ensuring that unverified speaker labels cannot satisfy authentication or consent checks.
+- Add tests ensuring that a private reflection, model state, or symbolic exercise cannot trigger external messaging, publication, financial transfer, or access to another participant's private space.
+- Preserve historical records and legacy notation; any normalization must be additive and traceable, never a silent rewrite.
