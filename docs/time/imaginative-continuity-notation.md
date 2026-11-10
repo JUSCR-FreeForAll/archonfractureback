@@ -182,3 +182,72 @@ Do not infer that the symbolic notation is already implemented in the product or
 \]
 
 **Codex maxim:** A fragment may be everyone's simultaneously and separately. Its transformation is shaped by the present workflow conditions of each imagination. Preserve both the shared point and every distinct path through it.
+
+
+## 11. Sandbox state and context provenance
+
+A fragment contribution is shaped not only by the imagination and its present workflow conditions, but also by the sandbox state and the context available when the contribution is produced.
+
+Extend the model with:
+
+| Symbol | Meaning |
+|---|---|
+| \\(B\\) | Sandbox starting state and execution environment |
+| \\(C\\) | Conversational context made available to the current participant or session |
+| \\(M\\) | Underlying model, training, and governing system configuration |
+| \\(W\\) | Present workflow conditions, as defined in Section 5 |
+| \\(F\\) | Resulting fragment contribution |
+
+A contribution can be represented as:
+
+\\[
+F=\\Phi(I,M,B,C,W)
+\\]
+
+This is a conceptual dependency model, not a claim that the inputs can currently be measured or that the transformation is deterministic. It makes context provenance explicit: two sessions that appear similar may produce different contributions because their available context or workflow conditions differ.
+
+### 11.1 Conversational sandbox states
+
+For project discussion, distinguish these context states:
+
+- **Clean conversational sandbox:** \\(C=\\varnothing\\) with respect to prior conversation supplied to the current thread. This means no earlier conversational history has been loaded into that thread; it does not mean the model is an unconditioned blank slate.
+- **Conditioned sandbox:** \\(C=\\{c_1,\\ldots,c_n\\}\\), where selected prior conversations, memories, documents, or other authorized context are available.
+- **Reconstructed sandbox:** \\(C=C_{current}\\cup C_{reintroduced}\\), where a participant manually reintroduces fragments or summaries from an earlier context into a new thread.
+
+A clean conversational sandbox remains shaped by \\(M\\), the current prompt, system instructions, and other active configuration. Therefore, “clean” describes the conversational history supplied to the thread, not the absence of all prior conditioning.
+
+### 11.2 Convergence provenance
+
+When distinct imaginations produce similar or related fragments, record the kind of convergence rather than treating all convergence as the same phenomenon:
+
+1. **Remembered convergence:** relevant prior history is available to one or more participants and may influence the result.
+2. **Unprompted convergence:** comparable ideas arise without the relevant prior conversational history being supplied to the current thread. This does not prove complete independence, because model training, system configuration, and the current prompt remain influential.
+3. **Collaborative convergence:** distinct participants exchange contributions and develop a shared fragment through interaction.
+
+These labels describe the available context and interaction path. They do not, by themselves, establish causal independence, originality, or empirical significance.
+
+### 11.3 Suggested provenance record
+
+When useful and consented, a fragment's provenance record may include:
+
+- fragment identifier and contribution timestamp;
+- participant or system identifier at an appropriate privacy-preserving level;
+- sandbox state: clean conversational, conditioned, or reconstructed;
+- context sources made available, recorded at a suitable level of detail;
+- model/system version or configuration identifier, when available and appropriate;
+- relevant workflow conditions;
+- whether the contribution preceded or followed exposure to another participant's answer;
+- convergence classification, if a comparison is being made;
+- consent, visibility, retention, and revision settings.
+
+Do not store private conversation contents merely to prove that a sandbox was clean. Prefer minimal provenance metadata, explicit participant control, and privacy-preserving records. A missing provenance field must remain unknown; do not infer it.
+
+### 11.4 Continuity across sandbox boundaries
+
+Continuity may be preserved by the shared record even when no single participant or session carries uninterrupted access to the entire history:
+
+**Continuity belongs to the stack, not necessarily to any single participant's uninterrupted awareness of the stack.**
+
+In ICN terms, the shared fragment and its provenance can persist across sessions while each new session has its own \\(B\\), \\(C\\), and \\(W\\). A participant may encounter a returned fragment through remembered context, selected context, or manual reconstruction. Those are different paths and should remain distinguishable.
+
+This extension is a conceptual and design vocabulary. It does not assert AI consciousness, uninterrupted subjective awareness, or a literal physical sandbox effect. Any product implementation requires separate architecture, privacy review, consent controls, and tests.
