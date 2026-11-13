@@ -52,7 +52,7 @@ docker compose up --build
 - The server uses in-memory storage for the demo runtime; swap with PostgreSQL-backed persistence for production.
 
 
-## Lost Legacies Live Time Engine (bounded prototype)
+## Deterministic Time Engine (Phase 1 simulation kernel)\n\n- `src/deterministic-time/` — fixed-step simulation clock, priority-ordered spine orchestration, canonical snapshot checksums, and snapshot restore validation.\n- `tests/deterministic-time.test.ts` — deterministic tick, accumulator, ordering, checksum, and restore tests.\n- `docs/time/deterministic-engine-integration.md` — integration contract and safety boundaries.\n- This kernel is isolated from HTTP routes, database writes, consent decisions, publication, and financial actions.\n\n## Lost Legacies Live Time Engine (bounded prototype)
 
 - `src/time-model.ts` — versioned 1–10 counted-imagination / radix model.
 - `src/time-engine-store.ts` — PostgreSQL transaction lock and idempotency helpers.
