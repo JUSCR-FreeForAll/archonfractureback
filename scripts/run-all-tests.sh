@@ -31,23 +31,31 @@ run_script lint
 run_script typecheck
 
 if [[ -f prisma/schema.prisma ]]; then
-  if [[ "$PM" == "pnpm" ]]; then PRISMA=(pnpm exec prisma); else PRISMA=(npm exec -- prisma); fi
-  if "${PRISMA[@]}" validate && "${PRISMA[@]}" generate; then
-    log OK "Prisma validation and client generation passed."
+  # Prisma is a declared project dependency; do not mutate the dependency graph
+  # from a test runner. Install from the committed lockfile before invoking it.
+  if [[ ! -x node_modules/.bin/prisma ]]; then
+    fail_or_warn "Prisma CLI is missing. Install the declared dependencies before running tests."
+  elif [[ ! -d node_modules/@prisma/client ]]; then
+    fail_or_warn "@prisma/client is missing. Install the declared dependencies before running tests."
   else
-    fail_or_warn "Prisma validation or client generation failed."
-  fi
-
-  if [[ "${NODE_ENV:-}" == "production" ]]; then
-    fail_or_warn "Refusing Prisma db push because NODE_ENV=production."
-  elif [[ -n "${DATABASE_URL:-}" ]]; then
-    if "${PRISMA[@]}" db push --skip-generate; then
-      log OK "Prisma db push completed."
+    PRISMA=(./node_modules/.bin/prisma)
+    if "${PRISMA[@]}" validate && "${PRISMA[@]}" generate; then
+      log OK "Prisma validation and client generation passed."
     else
-      fail_or_warn "Prisma db push failed or the database is unavailable."
+      fail_or_warn "Prisma validation or client generation failed."
     fi
-  else
-    fail_or_warn "DATABASE_URL is not set; Prisma db push could not run."
+
+    if [[ "${NODE_ENV:-}" == "production" ]]; then
+      fail_or_warn "Refusing Prisma db push because NODE_ENV=production."
+    elif [[ -n "${DATABASE_URL:-}" ]]; then
+      if "${PRISMA[@]}" db push --skip-generate; then
+        log OK "Prisma db push completed."
+      else
+        fail_or_warn "Prisma db push failed or the database is unavailable."
+      fi
+    else
+      fail_or_warn "DATABASE_URL is not set; Prisma db push could not run."
+    fi
   fi
 else
   log INFO "No prisma/schema.prisma found; skipping Prisma checks."
