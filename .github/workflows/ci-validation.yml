@@ -1,0 +1,99 @@
+name: Lost Legacies Live - CI/CD Validation Gate
+
+on:
+  push:
+    branches: [codex/six-segment-interoperability, main]
+  pull_request:
+    branches: [codex/six-segment-interoperability, main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-test:
+    name: Lint, Typecheck, Database Seed & Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password123
+          POSTGRES_DB: eternal_vault_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d eternal_vault_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:password123@localhost:5432/eternal_vault_test?schema=public
+      NODE_ENV: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+
+      # This repository currently has no committed pnpm-lock.yaml.
+      # Switch to --frozen-lockfile and enable pnpm caching after adding one.
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm exec prisma generate
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Push schema to isolated test database
+        run: pnpm exec prisma db push
+
+      - name: Seed isolated test database
+        run: pnpm exec tsx prisma/seed.ts
+
+      - name: Run unified test suite
+        run: |
+          chmod +x scripts/run-all-tests.sh
+          ./scripts/run-all-tests.sh
+
+  deploy-to-vps:
+    name: Deploy Phoenix to VPS
+    needs: validate-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/codex/six-segment-interoperability'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SSH credentials and pinned host key
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy validated commit
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/id_ed25519 -p "${VPS_PORT:-22}" "$VPS_USER@$VPS_HOST" \
+            "cd /opt/phoenix && git fetch origin codex/six-segment-interoperability && git checkout codex/six-segment-interoperability && git reset --hard origin/codex/six-segment-interoperability && docker compose pull && docker compose up -d --build"
