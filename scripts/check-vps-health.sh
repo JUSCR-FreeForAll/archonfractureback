@@ -27,6 +27,7 @@ fail() {
 if [[ ! -d "$DEPLOY_DIR" ]]; then
   fail "Deployment directory does not exist: $DEPLOY_DIR"
 fi
+DEPLOY_DIR="$(cd "$DEPLOY_DIR" && pwd -P)"
 if [[ ! "$CURL_TIMEOUT" =~ ^[0-9]+$ ]] || (( CURL_TIMEOUT < 1 )); then
   fail "CURL_TIMEOUT must be a positive integer."
 fi
@@ -47,7 +48,7 @@ if ! docker compose -f "$COMPOSE_PATH" config --quiet; then
   fail "Compose configuration is invalid."
 fi
 
-if ! CONTAINER_IDS="$(docker compose -f "$COMPOSE_PATH" ps -q)"; then
+if ! CONTAINER_IDS="$(docker compose -f "$COMPOSE_PATH" ps --all -q)"; then
   fail "Unable to query Compose containers."
 fi
 [[ -n "$CONTAINER_IDS" ]] || fail "No containers found for this Compose project."
