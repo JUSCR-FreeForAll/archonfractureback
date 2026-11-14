@@ -15,7 +15,11 @@
     "prepare": "husky",
     "typecheck": "tsc --noEmit --rootDir .",
     "test:all": "bash ./scripts/run-all-tests.sh",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "test:vps-ssh": "bash scripts/test-vps-ssh.sh",
+    "health:vps": "bash scripts/check-vps-health.sh"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.0",
