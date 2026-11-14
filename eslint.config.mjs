@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import nextPlugin from "@next/eslint-plugin-next";
 import prettierConfig from "eslint-config-prettier";
+import globals from "globals";
 
 export default [
   {
@@ -9,6 +10,9 @@ export default [
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    languageOptions: { globals: globals.node },
+  },
   {
     plugins: {
       "@next/next": nextPlugin,
