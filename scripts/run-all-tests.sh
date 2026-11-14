@@ -39,7 +39,7 @@ if [[ -f prisma/schema.prisma ]]; then
   fi
 
   if [[ "${NODE_ENV:-}" == "production" ]]; then
-    log WARN "Skipping Prisma db push because NODE_ENV=production."
+    fail_or_warn "Refusing Prisma db push because NODE_ENV=production."
   elif [[ -n "${DATABASE_URL:-}" ]]; then
     if "${PRISMA[@]}" db push --skip-generate; then
       log OK "Prisma db push completed."
