@@ -1,0 +1,12 @@
+# Install as /etc/logrotate.d/phoenix-health
+/var/log/phoenix-health*.log {
+    daily
+    rotate 7
+    missingok
+    notifempty
+    compress
+    delaycompress
+    dateext
+    create 0640 root adm
+    su root adm
+}
