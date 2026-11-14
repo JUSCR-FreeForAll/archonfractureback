@@ -5,6 +5,6 @@ echo "🐶 Husky: Running lint-staged on staged files..."
 pnpm exec lint-staged
 
 echo "🧪 Running full test suite validation..."
-./scripts/run-all-tests.sh
+bash scripts/run-all-tests.sh
 
 echo "✅ All pre-commit validation checks passed successfully!"
