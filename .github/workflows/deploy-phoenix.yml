@@ -1,11 +1,21 @@
-name: Build & Deploy Phoenix Monitor
+name: Lost Legacies Live - CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [codex/six-segment-interoperability, main]
     paths:
       - "monitor/**"
+      - "src/**"
+      - "prisma/**"
+      - "scripts/**"
+      - "db/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "eslint.config.*"
       - ".github/workflows/deploy-phoenix.yml"
+  pull_request:
+    branches: [codex/six-segment-interoperability, main]
   workflow_dispatch:
 
 env:
@@ -13,7 +23,58 @@ env:
   IMAGE_NAME: ${{ github.repository }}/phoenix-monitor
 
 jobs:
+  validate-and-test:
+    name: Lint, Typecheck, Prisma & Test Suite
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password123
+          POSTGRES_DB: eternal_vault_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d eternal_vault_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (Node 22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # The checked-in root package-lock.json predates the Prisma dependencies
+      # currently declared in package.json. npm install reconciles that lock
+      # during this run; commit a regenerated lockfile to restore npm ci.
+      - name: Install Dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run TypeScript & Prisma Verification
+        env:
+          DATABASE_URL: postgresql://postgres:password123@localhost:5432/eternal_vault_test?schema=public
+        run: bash scripts/verify-ts-prisma.sh
+
+      - name: Run ESLint & Code Linting
+        run: npm run lint
+
+      - name: Run Unified Test Suite
+        env:
+          DATABASE_URL: postgresql://postgres:password123@localhost:5432/eternal_vault_test?schema=public
+          NODE_ENV: test
+        run: bash scripts/run-all-tests.sh
+
   build-and-deploy:
+    name: Build & Deploy Phoenix Monitor
+    needs: validate-and-test
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -70,8 +131,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Configure VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_PORT and GHCR_READ_TOKEN.
-      # GHCR_READ_TOKEN should be a narrowly-scoped read:packages token.
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.2.5
         with:
