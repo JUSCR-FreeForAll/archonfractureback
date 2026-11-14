@@ -19,7 +19,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "test:vps-ssh": "bash scripts/test-vps-ssh.sh",
-    "health:vps": "bash scripts/check-vps-health.sh"
+    "health:vps": "bash scripts/check-vps-health.sh",
+    "backup:logs": "bash scripts/backup-logs.sh"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.0",
