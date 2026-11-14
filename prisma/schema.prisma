@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model VaultRecord {
+  id               String   @id @default(cuid())
+  solanaPatron     String   @unique
+  baseAddress      String?
+  timefuxSignature String   @unique
+  slot             BigInt
+  mintAddress      String?
+  tokenAccount     String?
+  status           VaultStatus @default(PENDING)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  attestations     IdentityAttestation[]
+  auditEvents      VaultAuditEvent[]
+  bindingHistory   PatronBindingHistory[]
+
+  @@index([baseAddress])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum VaultStatus {
+  PENDING
+  VERIFIED
+  ATTESTED
+  REVOKED
+}
+
+model IdentityAttestation {
+  id            String @id @default(cuid())
+  vaultRecordId String
+  vaultRecord   VaultRecord @relation(fields: [vaultRecordId], references: [id])
+  baseAddress   String
+  solanaPatron  String
+  message       String
+  signature     String
+  chainId       Int
+  nonceId       String @unique
+  nonce         AttestationNonce @relation(fields: [nonceId], references: [id])
+  verifiedAt    DateTime @default(now())
+  recordHash    String
+
+  @@unique([baseAddress, solanaPatron])
+  @@index([baseAddress])
+}
+
+model AttestationNonce {
+  id          String @id @default(cuid())
+  nonce       String @unique
+  baseAddress String
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  attestation IdentityAttestation?
+  @@index([baseAddress, expiresAt])
+}
+
+model VaultAuditEvent {
+  id            String @id @default(cuid())
+  vaultRecordId String?
+  vaultRecord   VaultRecord? @relation(fields: [vaultRecordId], references: [id])
+  eventType     String
+  actor         String?
+  previousState Json?
+  newState      Json?
+  recordHash    String
+  createdAt     DateTime @default(now())
+
+  @@index([vaultRecordId])
+  @@index([createdAt])
+}
+
+model PatronBindingHistory {
+  id           String @id @default(cuid())
+  vaultRecordId String
+  vaultRecord  VaultRecord @relation(fields: [vaultRecordId], references: [id])
+  previousBase String?
+  newBase      String
+  reason       String?
+  authorizedBy String
+  createdAt    DateTime @default(now())
+
+  @@index([vaultRecordId])
+}
