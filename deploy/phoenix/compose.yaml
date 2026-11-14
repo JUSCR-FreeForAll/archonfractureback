@@ -1,0 +1,21 @@
+services:
+  phoenix-monitor:
+    image: ghcr.io/${GITHUB_REPOSITORY_LOWER}/phoenix-monitor:latest
+    container_name: phoenix-monitor
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
