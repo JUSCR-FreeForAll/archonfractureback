@@ -57,6 +57,11 @@ jobs:
       - name: Install Dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Generate Prisma Client
+        env:
+          DATABASE_URL: postgresql://postgres:password123@localhost:5432/eternal_vault_test?schema=public
+        run: npm run db:generate
+
       - name: Run TypeScript & Prisma Verification
         env:
           DATABASE_URL: postgresql://postgres:password123@localhost:5432/eternal_vault_test?schema=public
