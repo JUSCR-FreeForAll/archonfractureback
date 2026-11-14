@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:migrate": "psql $DATABASE_URL -f db/schema.sql && psql $DATABASE_URL -f db/migrations/002_time_engine.sql",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.0",
@@ -35,7 +36,9 @@
     "eslint-config-prettier": "^10.1.8",
     "lint-staged": "^16.2.6",
     "prisma": "^6.19.0",
-    "typescript-eslint": "^8.46.3"
+    "typescript-eslint": "^8.46.3",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7"
   },
   "lint-staged": {
     "*.{js,mjs,ts,tsx}": [
