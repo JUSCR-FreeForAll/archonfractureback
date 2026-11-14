@@ -34,7 +34,7 @@ on_error() {
 }
 trap on_error ERR
 
-die() { echo "ERROR: $*" >&2; exit 1; }
+die() { echo "ERROR: $*" >&2; notify "Phoenix log backup FAILED on $(hostname) at $(date -u +%FT%TZ). Review backup configuration."; exit 1; }
 [[ -d "$LOG_DIR" ]] || die "Log directory does not exist: $LOG_DIR"
 [[ -n "$S3_BUCKET" ]] || die "Set S3_BUCKET to the destination bucket."
 [[ "$RETENTION_DAYS" =~ ^[0-9]+$ ]] && (( RETENTION_DAYS >= 1 )) || die "RETENTION_DAYS must be a positive integer."
