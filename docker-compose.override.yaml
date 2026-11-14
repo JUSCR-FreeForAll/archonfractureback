@@ -1,0 +1,59 @@
+# Local development override only; never use these credentials in production.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eternal-vault-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_only_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-eternal_vault}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d eternal_vault"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  vault-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eternal-vault-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-local_only_change_me}@postgres:5432/${POSTGRES_DB:-eternal_vault}?schema=public
+      PHOENIX_MONITOR_SECRET: ${PHOENIX_MONITOR_SECRET:-local_dev_phoenix_secret_change_me}
+      VAULT_WEBHOOK_SECRET: ${VAULT_WEBHOOK_SECRET:-local_dev_webhook_secret_change_me}
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NODE_ENV: development
+    volumes:
+      - ./:/app
+      - /app/.next
+      - /app/node_modules
+  phoenix-monitor:
+    build:
+      context: ./monitor
+      dockerfile: Dockerfile
+    container_name: eternal-vault-phoenix-local
+    restart: unless-stopped
+    depends_on:
+      vault-api:
+        condition: service_started
+    environment:
+      SOLANA_CLUSTER: devnet
+      HELIUS_API_KEY: ${HELIUS_API_KEY:?Set HELIUS_API_KEY in your environment or .env file}
+      NEXT_PUBLIC_TIMEFUX_PROGRAM_ID: TiMeFUXyR9nTgmiiQgx3wH2qzoyMiY5G4seySXMA9pP
+      NEXT_PUBLIC_APP_URL: http://vault-api:3000
+      VAULT_API_URL: http://vault-api:3000/api/vault/record
+      PHOENIX_MONITOR_SECRET: ${PHOENIX_MONITOR_SECRET:-local_dev_phoenix_secret_change_me}
+      NODE_ENV: development
+volumes:
+  pgdata:
