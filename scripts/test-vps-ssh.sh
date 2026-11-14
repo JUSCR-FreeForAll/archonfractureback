@@ -26,6 +26,10 @@ if [[ -z "$VPS_HOST" ]]; then
   usage >&2
   exit 2
 fi
+if [[ "$VPS_HOST" == -* || "$VPS_USER" == -* || "$VPS_HOST" =~ [[:space:]] || "$VPS_USER" =~ [[:space:]] ]]; then
+  echo "ERROR: VPS host and user must be non-empty SSH destination values without whitespace or leading hyphens." >&2
+  exit 2
+fi
 
 if [[ ! "$VPS_PORT" =~ ^[0-9]{1,5}$ ]] || (( VPS_PORT < 1 || VPS_PORT > 65535 )); then
   echo "ERROR: VPS port must be an integer between 1 and 65535." >&2
