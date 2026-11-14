@@ -8,6 +8,7 @@ on:
       - "src/**"
       - "prisma/**"
       - "scripts/**"
+      - "deploy/logrotate/**"
       - "db/**"
       - "package.json"
       - "package-lock.json"
@@ -79,7 +80,7 @@ jobs:
   build-and-deploy:
     name: Build & Deploy Phoenix Monitor
     needs: validate-and-test
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/codex/six-segment-interoperability' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
