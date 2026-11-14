@@ -1,12 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { randomBytes, createHash } from "node:crypto";
 
+if (process.env.NODE_ENV === "production") {
+  console.error("CRITICAL: Seeding is blocked in production.");
+  process.exit(1);
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Refusing to run destructive development seed in production.");
-  }
   console.log("Starting local database seeding...");
   await prisma.$transaction([
     prisma.vaultAuditEvent.deleteMany(),
